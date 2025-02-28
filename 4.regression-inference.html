@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Review of Linear Regression &#8212; GLM I</title>
+    <title>Inference from Regression Models &#8212; GLM I</title>
   
   
   
@@ -59,10 +59,11 @@
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '2.linear-regression-review';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '4.regression-inference';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Introduction to Statistical Modelling" href="1.stat-modelling.html" />
+    <link rel="next" title="Regression Diagnostics" href="5.regression-diagnostics.html" />
+    <link rel="prev" title="Multiple Linear Regression" href="3.multiple-regression.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -182,7 +183,10 @@
         </ul>
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="1.stat-modelling.html">Introduction to Statistical Modelling</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Review of Linear Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.simple-regression.html">Simple Linear Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3.multiple-regression.html">Multiple Linear Regression</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Inference from Regression Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5.regression-diagnostics.html">Regression Diagnostics</a></li>
 </ul>
 
     </div>
@@ -254,7 +258,7 @@
       
       
       
-      <li><a href="https://github.com/martynmcfarquhar/PSYCH-ADVANCEDSTATS-GLM1/issues/new?title=Issue%20on%20page%20%2F2.linear-regression-review.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/martynmcfarquhar/PSYCH-ADVANCEDSTATS-GLM1/issues/new?title=Issue%20on%20page%20%2F4.regression-inference.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -284,7 +288,7 @@
       
       
       
-      <li><a href="_sources/2.linear-regression-review.ipynb" target="_blank"
+      <li><a href="_sources/4.regression-inference.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -355,7 +359,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -366,11 +372,22 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Review of Linear Regression</h1>
+    <h1>Inference from Regression Models</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#regression-inference-as-model-comparisons">Regression Inference as Model Comparisons</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-anova-function">The <code class="docutils literal notranslate"><span class="pre">anova()</span></code> Function</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -380,62 +397,16 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="review-of-linear-regression">
-<h1>Review of Linear Regression<a class="headerlink" href="#review-of-linear-regression" title="Link to this heading">#</a></h1>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">data</span><span class="p">(</span><span class="s">&#39;mtcars&#39;</span><span class="p">)</span>
-<span class="nf">head</span><span class="p">(</span><span class="n">mtcars</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><table class="dataframe">
-<caption>A data.frame: 6 × 11</caption>
-<thead>
-	<tr><th></th><th scope=col>mpg</th><th scope=col>cyl</th><th scope=col>disp</th><th scope=col>hp</th><th scope=col>drat</th><th scope=col>wt</th><th scope=col>qsec</th><th scope=col>vs</th><th scope=col>am</th><th scope=col>gear</th><th scope=col>carb</th></tr>
-	<tr><th></th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
-</thead>
-<tbody>
-	<tr><th scope=row>Mazda RX4</th><td>21.0</td><td>6</td><td>160</td><td>110</td><td>3.90</td><td>2.620</td><td>16.46</td><td>0</td><td>1</td><td>4</td><td>4</td></tr>
-	<tr><th scope=row>Mazda RX4 Wag</th><td>21.0</td><td>6</td><td>160</td><td>110</td><td>3.90</td><td>2.875</td><td>17.02</td><td>0</td><td>1</td><td>4</td><td>4</td></tr>
-	<tr><th scope=row>Datsun 710</th><td>22.8</td><td>4</td><td>108</td><td> 93</td><td>3.85</td><td>2.320</td><td>18.61</td><td>1</td><td>1</td><td>4</td><td>1</td></tr>
-	<tr><th scope=row>Hornet 4 Drive</th><td>21.4</td><td>6</td><td>258</td><td>110</td><td>3.08</td><td>3.215</td><td>19.44</td><td>1</td><td>0</td><td>3</td><td>1</td></tr>
-	<tr><th scope=row>Hornet Sportabout</th><td>18.7</td><td>8</td><td>360</td><td>175</td><td>3.15</td><td>3.440</td><td>17.02</td><td>0</td><td>0</td><td>3</td><td>2</td></tr>
-	<tr><th scope=row>Valiant</th><td>18.1</td><td>6</td><td>225</td><td>105</td><td>2.76</td><td>3.460</td><td>20.22</td><td>1</td><td>0</td><td>3</td><td>1</td></tr>
-</tbody>
-</table>
-</div></div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">mod</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">mpg</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">wt</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="o">=</span><span class="n">mtcars</span><span class="p">)</span>
-<span class="nf">summary</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call:
-lm(formula = mpg ~ wt, data = mtcars)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--4.5432 -2.3647 -0.1252  1.4096  6.8727 
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)  37.2851     1.8776  19.858  &lt; 2e-16 ***
-wt           -5.3445     0.5591  -9.559 1.29e-10 ***
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-Residual standard error: 3.046 on 30 degrees of freedom
-Multiple R-squared:  0.7528,	Adjusted R-squared:  0.7446 
-F-statistic: 91.38 on 1 and 30 DF,  p-value: 1.294e-10
-</pre></div>
-</div>
-</div>
-</div>
+  <section class="tex2jax_ignore mathjax_ignore" id="inference-from-regression-models">
+<h1>Inference from Regression Models<a class="headerlink" href="#inference-from-regression-models" title="Link to this heading">#</a></h1>
+<section id="regression-inference-as-model-comparisons">
+<h2>Regression Inference as Model Comparisons<a class="headerlink" href="#regression-inference-as-model-comparisons" title="Link to this heading">#</a></h2>
+<p>To start off with, we shall return to the simple linear regression output. Notice that there is an <span class="math notranslate nohighlight">\(F\)</span>-statistic given at the bottom for the model as a whole … Notice that this <span class="math notranslate nohighlight">\(p\)</span>-value is <em>identical</em> to the <span class="math notranslate nohighlight">\(p\)</span>-value for the slope coefficient. What’s more, the <span class="math notranslate nohighlight">\(F\)</span>-statistic value is actually equivalent to the <em>square</em> of the <span class="math notranslate nohighlight">\(t\)</span>-statistic. In other words, the test on whether the coefficient is 0 in the population and the test of the model against a model containing only an intercept are <em>the exact same test</em>.</p>
+<p>This is actually quite a deep insight and tells us something very interesting about the fact that we can conceptualise testing coefficients in a model as a <em>model comparison procedure</em>.</p>
+<section id="the-anova-function">
+<h3>The <code class="docutils literal notranslate"><span class="pre">anova()</span></code> Function<a class="headerlink" href="#the-anova-function" title="Link to this heading">#</a></h3>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -469,13 +440,22 @@ F-statistic: 91.38 on 1 and 30 DF,  p-value: 1.294e-10
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="1.stat-modelling.html"
+       href="3.multiple-regression.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Introduction to Statistical Modelling</p>
+        <p class="prev-next-title">Multiple Linear Regression</p>
       </div>
+    </a>
+    <a class="right-next"
+       href="5.regression-diagnostics.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Regression Diagnostics</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>
@@ -483,6 +463,24 @@ F-statistic: 91.38 on 1 and 30 DF,  p-value: 1.294e-10
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#regression-inference-as-model-comparisons">Regression Inference as Model Comparisons</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-anova-function">The <code class="docutils literal notranslate"><span class="pre">anova()</span></code> Function</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
