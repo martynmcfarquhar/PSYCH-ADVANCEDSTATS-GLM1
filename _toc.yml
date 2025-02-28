@@ -9,3 +9,5 @@ chapters:
 - file: 3.multiple-regression
 - file: 4.regression-inference
 - file: 5.regression-diagnostics
+- file: 6.additional-topics
+- file: 7.summary-quiz
