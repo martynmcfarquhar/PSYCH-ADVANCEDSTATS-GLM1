@@ -1,0 +1,662 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Step 1: Motion Correction &#8212; GLM I</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b76e3c8a" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '2.motion';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="0.intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="GLM I - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="GLM I - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="0.intro.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1.stat-modelling.html">The Structure of fMRI Data</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/martynmcfarquhar/PSYCH-ADVANCEDSTATS-GLM1" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/martynmcfarquhar/PSYCH-ADVANCEDSTATS-GLM1/issues/new?title=Issue%20on%20page%20%2F2.motion.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/2.motion.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Step 1: Motion Correction</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#problems-with-motion">Problems With Motion</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#corruption-of-the-time-series">Corruption of the Time Series</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#corruption-of-the-signal-measurement">Corruption of the Signal Measurement</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#motion-correlated-with-the-task">Motion Correlated With the Task</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motion-correction-theory">Motion Correction Theory</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#motion-parameters">Motion Parameters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-the-fmri-data">Resampling the fMRI Data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-much-motion-is-too-much">How Much Motion is Too Much?</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motion-correction-in-spm">Motion Correction in SPM</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-graphical-batch-system">Using the Graphical Batch System</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-matlab-code">Using MATLAB Code</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="step-1-motion-correction">
+<h1>Step 1: Motion Correction<a class="headerlink" href="#step-1-motion-correction" title="Link to this heading">#</a></h1>
+<p>One of the biggest sources of variance in the fMRI timeseries is head motion. Unfortunately, motion in the scanner is inevitable as it is unrealistic to expect all subjects to remain perfectly still for the duration of the experimental task. In cases where motion is particularly bad, it can cause such issues that the data cannot be used. Even in cases where the motion seems slight, changes in head position of as little as 2-3mm can corrupt the data. Motion is therefore a serious issue for the quality of our fMRI data. Although best to minimise movement at source, we must recognise that there will always be <em>some</em> head motion and must therefore be aware of what we can do to try and fix it.</p>
+<section id="problems-with-motion">
+<h2>Problems With Motion<a class="headerlink" href="#problems-with-motion" title="Link to this heading">#</a></h2>
+<p>There are two main issues resulting from head motion. The first is that motion will cause individual voxels to suddenly contain data from a different part of the brain. The second is that motion can disrupt the recording of the signal by the scanner. Both these issues can be further compounded by motion that occurs more during certain conditions of the experimental task. In these case, the motion is <em>correlated</em> with the task, creating a serious confound in the data.</p>
+<section id="corruption-of-the-time-series">
+<h3>Corruption of the Time Series<a class="headerlink" href="#corruption-of-the-time-series" title="Link to this heading">#</a></h3>
+<p>One of the main issue with motion is that the time series at an individual voxel is no longer a continuous measure of a specific point in the brain. Instead, the time series measures <em>several</em> points in the brain over time. Where this is particularly problematic is at tissue boundaries. For instance, motion may causes a voxel to contain signal from both <em>inside</em> and <em>outside</em> the head, or from both <em>inside</em> and <em>outside</em> the ventricles. In these cases, the change in tissue type will cause a sudden shift in signal intensity that may be misconstrued as true brain activity. This is shown in <code class="xref std std-numref docutils literal notranslate"><span class="pre">mot-spikes-fig</span></code>, where 20 volumes in the middle of a functional series have been artificially shifted to the right and then back again. Without any form of correction, the sudden change of intensity in the highlighted voxel would likely be identified as true brain activation by the statistical analysis.</p>
+<figure class="align-default" id="mot-spikes-fig">
+<a class="reference internal image-reference" href="_images/mot-spikes.png"><img alt="_images/mot-spikes.png" src="_images/mot-spikes.png" style="width: 600px;" /></a>
+<figcaption>
+<p><span class="caption-text">Illustration of how sudden changes in signal intensity can occur after head motion.</span><a class="headerlink" href="#mot-spikes-fig" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>One saving grace of this form of motion is that it is often visible as activations that trace the border between tissue types. As such, any activation pattern that sits along the edge of the brain, or along the edge of internal structures, should be treated with extreme caution. An example is shown in <code class="xref std std-numref docutils literal notranslate"><span class="pre">mot-edge-fig</span></code>.</p>
+<figure class="align-default" id="mot-edge-fig">
+<a class="reference internal image-reference" href="_images/mot-edge.png"><img alt="_images/mot-edge.png" src="_images/mot-edge.png" style="width: 500px;" /></a>
+<figcaption>
+<p><span class="caption-text">Illustration of how motion artefacts can appear along the edges of the brain.</span><a class="headerlink" href="#mot-edge-fig" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="corruption-of-the-signal-measurement">
+<h3>Corruption of the Signal Measurement<a class="headerlink" href="#corruption-of-the-signal-measurement" title="Link to this heading">#</a></h3>
+<p>A more insidious effect of motion is that it can impact the signal measured by the scanner. When the subject’s head moves, protons from a neighbouring slice with a different excitation move into the voxel. This disrupts the magnetic gradients and alters the measured signal. This is exacerbated when using an inter-leaved acquisition sequence, as the excitation differences between neighbouring slices will be greater. Importantly, these <em>spin-history</em> effects persist for several volumes, even if those volumes are not subject to motion themselves. Unfortunately, such effects are not a part of standard spatial motion correction techniques. Although spin-history correction has been proposed (e.g. <a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/8699946/">Friston et al, 1996</a>), such methods are not in common use. In part, this is due to the complexity and poor understanding of the influence of spin-history on the BOLD signal. Instead, any residual effects of motion are usually accommodated during the statistical modelling. In extreme cases, spin-history effects will be visible as <em>striping</em> in the image, as shown in <code class="xref std std-numref docutils literal notranslate"><span class="pre">spin-hist-fig</span></code>. Here, the top row shows an interleaved sequence and the bottom row shows a sequential sequence. The left column is a scan without motion and the right is a scan with motion.</p>
+<figure class="align-default" id="spin-hist-fig">
+<a class="reference internal image-reference" href="_images/spin-history.gif"><img alt="_images/spin-history.gif" src="_images/spin-history.gif" style="width: 500px;" /></a>
+<figcaption>
+<p><span class="caption-text">Spin history effects in both an interleaved (<em>top</em>) and sequential (<em>bottom</em>) sequence. Images on the <em>right</em> contain motion, whereas images on the <em>left</em> contain no motion.</span><a class="headerlink" href="#spin-hist-fig" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="motion-correlated-with-the-task">
+<h3>Motion Correlated With the Task<a class="headerlink" href="#motion-correlated-with-the-task" title="Link to this heading">#</a></h3>
+<p>Motion presents a particularly difficult problem when it occurs more in some conditions of the experimental task than others. For instance, consider a task with different difficulty conditions. It is plausible that frustration during the harder condition may cause subjects to move more, compared to the easier condition. If this happens, there will be greater movement-related intensity changes during the difficult condition. Unfortunately, such changes will be inseparable from intensity changes related to true brain activity. As such, any attempt to correct for the motion effects will likely reduce or remove the true brain activity. In this situation, motion becomes an inescapable confound and the scans cannot be used. A similar issue occurs when one experimental group moves more than the other. For instance, a study comparing patients and controls. If the patients have less tolerance for the scanning environment they may move more, which could create more spurious results within that group. This could translate to spurious group differences that are ultimately more related to motion that differences in brain activity.</p>
+</section>
+</section>
+<section id="motion-correction-theory">
+<h2>Motion Correction Theory<a class="headerlink" href="#motion-correction-theory" title="Link to this heading">#</a></h2>
+<p>Now that we have discussed the problems that head motion can cause, we can turn to motion correction techniques. Typically, spatial motion correction is performed as the first pre-processing step. This involves transforming all the functional volumes so that are in alignment with one another. In principle, this will alleviate issues with the time series containing data from multiple brain regions, but it will not fix spin-history effects nor fix issues of task- or group-correlated motion. In SPM, this form of motion correction is known as <em>realignment</em> and is illustrated in <code class="xref std std-numref docutils literal notranslate"><span class="pre">realign-poldrack-fig</span></code> from <a class="reference external" href="https://www.librarysearch.manchester.ac.uk/permalink/44MAN_INST/bofker/alma992975905221601631">Poldrack, Mumford and Nichols (2011)</a>.</p>
+<figure class="align-default" id="realign-poldrack-fig">
+<a class="reference internal image-reference" href="_images/realign-poldrack.png"><img alt="_images/realign-poldrack.png" src="_images/realign-poldrack.png" style="width: 800px;" /></a>
+<figcaption>
+<p><span class="caption-text">Illustration of motion correction.</span><a class="headerlink" href="#realign-poldrack-fig" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Hopefully it is clear that spatial motion correction is simply an image registration problem. A single fMRI volume is chosen to act as the <em>reference</em> image and all the other volumes are then transformed to match. As such, you can think of motion correction as a series of registration steps, where the reference stays the same and the source is changed each time to a different fMRI volume. From this perspective, there is nothing unique about the mechanics of motion correction. The main focus of most motion correction algorithms is <em>speed</em>, given that hundreds of volumes need to be aligned. As such, most motion correction algorithms use <em>least-squares</em> as the cost function. In addition, motion correction only uses a 6-parameter rigid-body transformation, which reduces the scope of the parameter space. Finally, because motions are likely to be small, the results of each previous alignment can be used as the starting point for the next alignment. As such, the optimisation algorithm should always be close to the optimal solution on each iteration, allowing it to converge  quickly. As such, we can think of motion correction as simply a highly-tuned and specific version of image registration.</p>
+<section id="motion-parameters">
+<h3>Motion Parameters<a class="headerlink" href="#motion-parameters" title="Link to this heading">#</a></h3>
+<p>The registration parameters associated with each volume are one of the main outputs of motion correction. As we know, registration involves estimating a matrix <span class="math notranslate nohighlight">\(\mathbf{T}\)</span> that can be used to transform the <em>source</em> to match the <em>target</em>. For motion correction, there will be a <span class="math notranslate nohighlight">\(\mathbf{T}\)</span> matrix for each volume. Each of these <span class="math notranslate nohighlight">\(\mathbf{T}_{t}\)</span> matrices <span class="math notranslate nohighlight">\((t=1,\dots,T)\)</span> will contain the translations and rotations needed to best match volume <span class="math notranslate nohighlight">\(t\)</span> to the reference volume <span class="math notranslate nohighlight">\(t^{\prime}\)</span>, where <span class="math notranslate nohighlight">\(\mathbf{T}_{t^{\prime}} = \mathbf{I}\)</span>. The parameters of these <span class="math notranslate nohighlight">\(\mathbf{T}_{t}\)</span> matrices can then be used to indicate how much the subject moved during the scan. An example of these forms of plots is shown in <code class="xref std std-numref docutils literal notranslate"><span class="pre">mot-params-fig</span></code>.</p>
+<figure class="align-default" id="mot-params-fig">
+<a class="reference internal image-reference" href="_images/mot-params.png"><img alt="_images/mot-params.png" src="_images/mot-params.png" style="width: 800px;" /></a>
+<figcaption>
+<p><span class="caption-text">Example of the plots of motion parameters produced after motion correction. In this example, the <em>middle</em> volume was used as the reference.</span><a class="headerlink" href="#mot-params-fig" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="resampling-the-fmri-data">
+<h3>Resampling the fMRI Data<a class="headerlink" href="#resampling-the-fmri-data" title="Link to this heading">#</a></h3>
+<p>Once all the <span class="math notranslate nohighlight">\(\mathbf{T}_{t}\)</span> matrices have been estimated, it is typical to turn these world-space transformations into voxel-space transformations. This effectively <em>applies</em> the motion correction to the data by resampling each volume to match the target. Resampling at this stage is particularly important for slice-timing correction, which is our next pre-processing step. However, it is not always advisable to resample the data at this stage, as we will discussed at the end of this lesson. In terms of the interpolation itself, higher-order B-spline methods are generally preferred, as evidence suggests that linear methods can introduce greater errors (<a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/9294580/">Ostuni et al., 1997</a>). In principle, we could choose the highest-order interpolation available to us, but the gains in accuracy will likely be undone once we perform smoothing as a final pre-processing step. As such, SPM defaults to 4th-degree B-spline interpolation as a reasonable compromise.</p>
+</section>
+<section id="how-much-motion-is-too-much">
+<h3>How Much Motion is Too Much?<a class="headerlink" href="#how-much-motion-is-too-much" title="Link to this heading">#</a></h3>
+<p>Considering the fact that motion is an unavoidable part of fMRI data, but is also potentially very damaging, how much motion should we allow before deciding a scan is too corrupted to use? This is an obvious question that is, unfortunately, difficult to answer. Generally, volume-to-volume motion is more damaging than steady and slow motion, meaning that motion <em>spikes</em> are most concerning. According to <a class="reference external" href="https://www.librarysearch.manchester.ac.uk/permalink/44MAN_INST/bofker/alma992975905221601631">Poldrack, Mumford and Nichols (2011)</a>, a sudden shift of more than <span class="math notranslate nohighlight">\(\frac{1}{2}\)</span> a voxel should be cause for concern. For instance, if the voxels were 3mm isotropic then a spike of &gt; 1.5mm in the <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span> or <span class="math notranslate nohighlight">\(z\)</span> planes would be a concern. This is similar for rotations, where we can calculate the angle for a distance of 1.5mm using the formula for the <a class="reference external" href="https://en.wikipedia.org/wiki/Arc_length"><em>arc length</em></a> of a circle</p>
+<div class="math notranslate nohighlight">
+\[
+\theta = d\frac{180}{\pi r}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(d\)</span> is the distance and <span class="math notranslate nohighlight">\(r\)</span> is the radius. If we consider the head a circle, we can use an approximate radius of 50mm (<a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3254728/">Power et al., 2012</a>). For 3mm isotropic voxels, this gives</p>
+<div class="math notranslate nohighlight">
+\[
+1.72 = 1.5 \times \frac{180}{\pi \times 50}
+\]</div>
+<p>such that any sudden rotation greater than 1.72<span class="math notranslate nohighlight">\(^{\circ}\)</span> would be cause for concern. However, excluding an entire scan on the basis of a single large spike would seem unwise. As such, we need to consider not only the magnitude of the motion, but also the <em>extent</em> of motion through the fMRI series. A couple of spikes would suggest the data is recoverable, whereas a scan that is littered with motion spikes will almost certainly be a lost cause. As an example, the plot in <code class="xref std std-numref docutils literal notranslate"><span class="pre">trans-spikes-fig</span></code> shows a couple of concerning spikes in the <span class="math notranslate nohighlight">\(z\)</span>-translation trace, but this would not be enough to suggest discarding the scan. However, if similar spikes were seen across the whole series, we would be concerned about the quality of the data.</p>
+<figure class="align-default" id="trans-spikes-fig">
+<a class="reference internal image-reference" href="_images/trans-spikes.png"><img alt="_images/trans-spikes.png" src="_images/trans-spikes.png" style="width: 600px;" /></a>
+<figcaption>
+<p><span class="caption-text">Example of motion parameters containing large spikes. In this example, the spikes are not numerous enough to suggest discarding the scan.</span><a class="headerlink" href="#trans-spikes-fig" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="motion-correction-in-spm">
+<h2>Motion Correction in SPM<a class="headerlink" href="#motion-correction-in-spm" title="Link to this heading">#</a></h2>
+<p>Now that we have discussed the theory of motion correction, we can examine how to perform this step using SPM.</p>
+<section id="using-the-graphical-batch-system">
+<h3>Using the Graphical Batch System<a class="headerlink" href="#using-the-graphical-batch-system" title="Link to this heading">#</a></h3>
+<p>The video below will demonstrate how to perform motion correction using the SPM graphical interface. Note that the default approach in SPM is a <em>two-pass</em> procedure, where the images are initially aligned to the first volume. A mean image is then created and a second pass is performed to align the volumes with the mean. The final <span class="math notranslate nohighlight">\(\mathbf{T}_{t}\)</span> matrices therefore represent a combination of the transformations needed for both steps. The idea is that registration can be more finely tuned using this second pass, although, realistically, it will not make a huge difference. Importantly, we need to save this mean image for use in a later pre-processing step.</p>
+<div style="max-width: 1280px"><div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;"><iframe src="https://livemanchesterac.sharepoint.com/sites/UOM-FBMH-MSc-NCCN/_layouts/15/embed.aspx?UniqueId=27a69ee8-454c-4fe5-a640-e172328d949f&embed=%7B%22hvm%22%3Atrue%2C%22ust%22%3Atrue%7D&referrer=StreamWebApp&referrerScenario=EmbedDialog.Create" width="1280" height="720" frameborder="0" scrolling="no" allowfullscreen title="3.Motion-Correction.mov" style="border:none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; height: 100%; max-width: 100%;"></iframe></div></div>
+</section>
+<section id="using-matlab-code">
+<h3>Using MATLAB Code<a class="headerlink" href="#using-matlab-code" title="Link to this heading">#</a></h3>
+<p>Beyond the graphical interface, it is also possible to perform motion correction in code using the <code class="docutils literal notranslate"><span class="pre">spm_realign</span></code> and <code class="docutils literal notranslate"><span class="pre">spm_reslice</span></code> functions. For example, the code below shows how to replicate the functionality of the <code class="docutils literal notranslate"><span class="pre">Realign:</span> <span class="pre">Estimate</span> <span class="pre">&amp;</span> <span class="pre">Reslice</span></code> module from the video.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% Launch SPM</span>
+<span class="n">spm</span><span class="p">(</span><span class="s">&#39;defaults&#39;</span><span class="p">,</span><span class="s">&#39;FMRI&#39;</span><span class="p">);</span>
+<span class="n">spm_figure</span><span class="p">(</span><span class="s">&#39;GetWin&#39;</span><span class="p">,</span><span class="s">&#39;Graphics&#39;</span><span class="p">);</span><span class="w">                  </span><span class="c">% Open graphics window for plots</span>
+
+<span class="c">% Motion correction (estimate)</span>
+<span class="n">func</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="n">spm_vol</span><span class="p">(</span><span class="s">&#39;IA_preproc_func.nii&#39;</span><span class="p">);</span>
+<span class="n">eopts</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="n">spm_get_defaults</span><span class="p">(</span><span class="s">&#39;realign.estimate&#39;</span><span class="p">);</span><span class="w"> </span><span class="c">% Default options struct</span>
+<span class="n">eopts</span><span class="p">.</span><span class="n">rtm</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">                                    </span><span class="c">% Set to 0 for 1-pass correction</span>
+
+<span class="n">spm_realign</span><span class="p">(</span><span class="n">func</span><span class="p">,</span><span class="n">eopts</span><span class="p">);</span><span class="w">                          </span>
+
+<span class="c">% Motion correction (resample)                     </span>
+<span class="n">mcfunc</span><span class="w">       </span><span class="p">=</span><span class="w"> </span><span class="n">spm_vol</span><span class="p">(</span><span class="s">&#39;IA_preproc_func.nii&#39;</span><span class="p">);</span><span class="w">     </span>
+<span class="n">ropts</span><span class="w">        </span><span class="p">=</span><span class="w"> </span><span class="n">spm_get_defaults</span><span class="p">(</span><span class="s">&#39;realign.write&#39;</span><span class="p">);</span><span class="w"> </span><span class="c">% Default options struct  </span>
+<span class="n">ropts</span><span class="p">.</span><span class="n">interp</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w">                                 </span><span class="c">% 4th-degree B-spline</span>
+<span class="n">ropts</span><span class="p">.</span><span class="n">which</span><span class="w">  </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="w"> </span><span class="mi">1</span><span class="p">];</span><span class="w">                             </span><span class="c">% [2 1] = resample all volumes (2) and create mean (1)</span>
+
+<span class="n">spm_reslice</span><span class="p">(</span><span class="n">mcfunc</span><span class="p">,</span><span class="n">ropts</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/cb6f1fa9706b94e384443b99a0a53891489416860e3b67ca7aff1d45648d1052.png" src="_images/cb6f1fa9706b94e384443b99a0a53891489416860e3b67ca7aff1d45648d1052.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SPM12: spm_realign (v7141)                         15:21:01 - 06/11/2023
+========================================================================
+Printing &#39;Graphics&#39; figure to:
+  /home/martyn/Downloads/spm_2023Nov06.ps
+Completed                               :          15:21:33 - 06/11/2023
+
+SPM12: spm_reslice (v7141)                         15:21:33 - 06/11/2023
+========================================================================
+Completed                               :          15:21:51 - 06/11/2023
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "jupyter_matlab_kernel"
+        },
+        kernelOptions: {
+            name: "jupyter_matlab_kernel",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'jupyter_matlab_kernel'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#problems-with-motion">Problems With Motion</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#corruption-of-the-time-series">Corruption of the Time Series</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#corruption-of-the-signal-measurement">Corruption of the Signal Measurement</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#motion-correlated-with-the-task">Motion Correlated With the Task</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motion-correction-theory">Motion Correction Theory</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#motion-parameters">Motion Parameters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-the-fmri-data">Resampling the fMRI Data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-much-motion-is-too-much">How Much Motion is Too Much?</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motion-correction-in-spm">Motion Correction in SPM</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-graphical-batch-system">Using the Graphical Batch System</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-matlab-code">Using MATLAB Code</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Dr Martyn McFarquhar
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
