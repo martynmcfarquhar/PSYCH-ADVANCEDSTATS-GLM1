@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Building the Preprocessing Pipeline &#8212; GLM I</title>
+    <title>Additional Regression Topics &#8212; GLM I</title>
   
   
   
@@ -57,11 +57,11 @@
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '6.building-pipelines';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '6.additional-topics';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Summary and Quiz" href="7.summary-quiz.html" />
+    <link rel="prev" title="Regression Diagnostics" href="5.regression-diagnostics.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -124,8 +124,6 @@
       
       
       
-        
-      
       <div class="bd-sidebar-primary bd-sidebar">
         
 
@@ -181,12 +179,14 @@
                 </a>
             </li>
         </ul>
-        <ul class="nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="1.stat-modelling.html">Introduction to Statistical Modelling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2.simple-regression.html">Simple Linear Regression</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3.multiple-regression.html">Multiple Linear Regression</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4.regression-inference.html">Inference from Regression Models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="5.regression-diagnostics.html">Regression Diagnostics</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Additional Regression Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7.summary-quiz.html">Summary and Quiz</a></li>
 </ul>
 
     </div>
@@ -258,7 +258,7 @@
       
       
       
-      <li><a href="https://github.com/martynmcfarquhar/PSYCH-ADVANCEDSTATS-GLM1/issues/new?title=Issue%20on%20page%20%2F6.building-pipelines.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/martynmcfarquhar/PSYCH-ADVANCEDSTATS-GLM1/issues/new?title=Issue%20on%20page%20%2F6.additional-topics.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -288,7 +288,7 @@
       
       
       
-      <li><a href="_sources/6.building-pipelines.ipynb" target="_blank"
+      <li><a href="_sources/6.additional-topics.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -372,7 +372,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Building the Preprocessing Pipeline</h1>
+    <h1>Additional Regression Topics</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -382,10 +382,8 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#do-we-always-need-slice-timing-correction">Do We Always Need Slice Timing Correction?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#should-we-perform-slice-timing-correction-or-motion-correction-first">Should We Perform Slice Timing Correction or Motion Correction First?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#should-we-resample-after-motion-correction">Should We Resample After Motion Correction?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preprocessing-flowchart">Preprocessing Flowchart</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standardisation">Standardisation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#variable-transformations">Variable Transformations</a></li>
 </ul>
             </nav>
         </div>
@@ -397,42 +395,13 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="building-the-preprocessing-pipeline">
-<h1>Building the Preprocessing Pipeline<a class="headerlink" href="#building-the-preprocessing-pipeline" title="Link to this heading">#</a></h1>
-<p>So far in this lesson, a rigid structure for preprocessing has been presented. Although this sequence of steps is applicable to most datasets, preprocessing should not always be blindly applied in this order. In this final section, we are going to present some key questions that should be asked whenever you are building a preprocessing pipeline. Depending upon the answers to these questions, the order of certain preprocessing steps may be reversed, or some steps may be skipped entirely. As such, it is important to recognise that preprocessing is not necessarily a fixed set of steps and that decisions need to be made to suit different datasets.</p>
-<section id="do-we-always-need-slice-timing-correction">
-<h2>Do We Always Need Slice Timing Correction?<a class="headerlink" href="#do-we-always-need-slice-timing-correction" title="Link to this heading">#</a></h2>
-<p>Earlier in this lesson we discussed the controversies surrounding slice timing correction, raising questions about whether this step should be used at all? This is a difficult question to answer as some authors, such as <a class="reference external" href="https://www.librarysearch.manchester.ac.uk/permalink/44MAN_INST/bofker/alma992975905221601631">Poldrack, Mumford and Nichols (2011)</a>, recommend <em>never</em> using slice timing correction. Their argument is that with shorter TRs the slice timing problem is not as problematic as it once was, to the extent that we can accommodate the slice offsets within the statistical model without needing to correct the raw data. This also avoids issues with ringing artefacts and the other interpolation issues discussed earlier. Taken at face value, this argument seems to suggest that slice timing correction is a product of older scanning sequences that is no longer necessary for modern fMRI data analysis. However, we need to consider what <em>evidence</em> there is to support this position. In an effort to  provide answers, a recent review  was published by <a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/31551667/">Parker &amp; Razlighi (2019)</a>. This is an excellent paper and well worth reading in detail to understand the complexities of the slice timing problem. In summary, the authors found <em>overwhelmingly</em> that slice timing correction was beneficial, even in data collected with a short TR. The only situation where this is not the case is when data is collected using a <em>block design</em> experiment. We will discuss the exact nature of this type of experiment in the <em>Experimental Design and Optimisation</em> unit. The main point, for now, is that evidence has consistently shown very limited benefit to performing slice timing correction on block design data (e.g. <a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/21757015/">Sladky <em>et al.</em>, 2011</a>). As such, if you are analysing data from a block design, slice timing correction can be skipped <em>entirely</em>. For all other types of data, the evidence suggests that slice-timing is always beneficial.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="additional-regression-topics">
+<h1>Additional Regression Topics<a class="headerlink" href="#additional-regression-topics" title="Link to this heading">#</a></h1>
+<section id="standardisation">
+<h2>Standardisation<a class="headerlink" href="#standardisation" title="Link to this heading">#</a></h2>
 </section>
-<section id="should-we-perform-slice-timing-correction-or-motion-correction-first">
-<h2>Should We Perform Slice Timing Correction or Motion Correction First?<a class="headerlink" href="#should-we-perform-slice-timing-correction-or-motion-correction-first" title="Link to this heading">#</a></h2>
-<p>Assuming that slice timing correction is appropriate for a particular dataset, questions arise about whether to perform slice timing correction first or motion correction first? If we return to the review by <a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/31551667/">Parker &amp; Razlighi (2019)</a>, their investigations suggested that it was often beneficial to perform motion correction first. The argument is that if we were to slice timing correct a timeseries that contains values from multiple regions of the brain, then the interpolation will effectively blur-together different regions of the brain across time. However, if there are large movements <em>and</em> the data were collected using an interleaved acquisition sequence, then things get more complicated. In this situation, the head motion will move different parts of the brain in and out of neighbouring slices. Because, in an interleaved sequence, these slices are sampled further apart in time, moving voxel across neighbouring slices during motion correction will mix together values measured at different time offsets. So we could end up with some values measured at the start of the TR and some measured near the end of the TR within the same timeseries. In this situation, slice timing correction will not be able to work correctly, meaning it may be better to perform slice timing correction <em>first</em>. As such, it is usually beneficial to perform motion correction first. However, if data were collected with an interleaved sequence <em>and</em> there are issues with large head motions, it may be better to perform slice timing correction first instead.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In any situation where there are uncertainties about the preprocessing choices, a sensitivity analysis could be undertaken where the data are processed <em>both</em> ways and any consistencies or inconsistencies in the results are examined. This should reveal which findings are robust and which appear sensitive to the order of the preprocessing steps.</p>
-</div>
-</section>
-<section id="should-we-resample-after-motion-correction">
-<h2>Should We Resample After Motion Correction?<a class="headerlink" href="#should-we-resample-after-motion-correction" title="Link to this heading">#</a></h2>
-<p>During the motion correction section of this lesson, we discussed how the data can be resampled once all the <span class="math notranslate nohighlight">\(\mathbf{T}\)</span> matrices have been estimated. This effectively <em>applies</em> the motion correction to the data. In the context of this lesson, this was so that the slice timing correction was applied accurately after the motion correction. However, as indicated above, slice timing may come first in some pipelines, or may not be used at all. In these situations, it would be better <em>not</em> to resample the functional data. This is because we want to <em>minimise</em> the number of interpolation steps to prevent image degradation. Recall that an affine transformation is the first step in spatial normalisation. This initial affine transformation can be concatenated with the motion-correction transformations to produce a single initial affine step. This affine step can then be concatenated with the non-linear transformation to produce a <em>single</em> shift in the voxel-coordinates that only requires the data to be interpolated <em>once</em>. This effectively creates motion-corrected <em>and</em> spatially normalised images in a single interpolation step.</p>
-<p>From a practical perspective, whenever you are performing slice timing first, or not at all, you can change the reslicing option in the <code class="docutils literal notranslate"><span class="pre">Realign:</span> <span class="pre">Estimate</span> <span class="pre">&amp;</span> <span class="pre">Reslice</span></code> module to <code class="docutils literal notranslate"><span class="pre">Mean</span> <span class="pre">Image</span> <span class="pre">Only</span></code>, as shown in <code class="xref std std-numref docutils literal notranslate"><span class="pre">reslice-opts-fig</span></code>.</p>
-<figure class="align-default" id="reslice-opts-fig">
-<a class="reference internal image-reference" href="_images/reslice-options.png"><img alt="_images/reslice-options.png" src="_images/reslice-options.png" style="width: 800px;" /></a>
-<figcaption>
-<p><span class="caption-text">Example of changing the reslice options for realignment.</span><a class="headerlink" href="#reslice-opts-fig" title="Link to this image">#</a></p>
-</figcaption>
-</figure>
-<p>SPM will then save or update the <code class="docutils literal notranslate"><span class="pre">*.mat</span></code> file containing the header matrices for each of the functional volumes. SPM will then automatically combined these transformation with those estimated by the <code class="docutils literal notranslate"><span class="pre">Normalise</span></code> module and the data will only be resampled <em>once</em>. From a practical perspective, this means that within the <code class="docutils literal notranslate"><span class="pre">Normalise</span></code> module you would select to apply the non-linear warping to the <em>original</em> functional files, rather than the <code class="docutils literal notranslate"><span class="pre">ar*.nii</span></code> or <code class="docutils literal notranslate"><span class="pre">r*.nii</span></code> files. In this situation, the final files from preprocessing would be named <code class="docutils literal notranslate"><span class="pre">sw*.nii</span></code> rather than <code class="docutils literal notranslate"><span class="pre">swar*.nii</span></code> or <code class="docutils literal notranslate"><span class="pre">swr*.nii</span></code>. Although it may seem like the motion correction has not been applied, this correction has in fact been combined with the normalisation step. As such, the <code class="docutils literal notranslate"><span class="pre">w</span></code> tag from the <code class="docutils literal notranslate"><span class="pre">Normalise</span></code> module indicates <em>both</em> motion correction and non-linear warping within the same step.</p>
-</section>
-<section id="preprocessing-flowchart">
-<h2>Preprocessing Flowchart<a class="headerlink" href="#preprocessing-flowchart" title="Link to this heading">#</a></h2>
-<p>The flowchart in <code class="xref std std-numref docutils literal notranslate"><span class="pre">preproc-flow-fig</span></code> provides guidance for preprocessing any data set with SPM. Although some of the issues and choices raised in this section apply, this pipeline should give you good quality results for the vast majority of datasets.</p>
-<figure class="align-default" id="preproc-flow-fig">
-<a class="reference internal image-reference" href="_images/preproc-flow.png"><img alt="_images/preproc-flow.png" src="_images/preproc-flow.png" style="width: 800px;" /></a>
-<figcaption>
-<p><span class="caption-text">A flowchart for performing preprocessing using SPM12.</span><a class="headerlink" href="#preproc-flow-fig" title="Link to this image">#</a></p>
-</figcaption>
-</figure>
+<section id="variable-transformations">
+<h2>Variable Transformations<a class="headerlink" href="#variable-transformations" title="Link to this heading">#</a></h2>
 </section>
 </section>
 
@@ -466,6 +435,24 @@ document.write(`
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="5.regression-diagnostics.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Regression Diagnostics</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="7.summary-quiz.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Summary and Quiz</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -482,10 +469,8 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#do-we-always-need-slice-timing-correction">Do We Always Need Slice Timing Correction?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#should-we-perform-slice-timing-correction-or-motion-correction-first">Should We Perform Slice Timing Correction or Motion Correction First?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#should-we-resample-after-motion-correction">Should We Resample After Motion Correction?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preprocessing-flowchart">Preprocessing Flowchart</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standardisation">Standardisation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#variable-transformations">Variable Transformations</a></li>
 </ul>
   </nav></div>
 
